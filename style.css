@@ -50,9 +50,26 @@ body {
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    letter-spacing: -2px;
+}
+
+.logo-text {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.logo-accent {
     color: var(--primary-color);
+    font-size: 2.5rem;
+    line-height: 1;
 }
 
 .nav-menu {
@@ -76,28 +93,86 @@ body {
 .hero {
     background: linear-gradient(135deg, #1A1A1A 0%, #2d2d2d 100%);
     color: var(--white);
-    padding: 120px 0;
-    text-align: center;
+    padding: 100px 0;
+    text-align: left;
+}
+
+.hero-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
 }
 
 .hero-content h1 {
-    font-size: 3rem;
+    font-size: 3.5rem;
     margin-bottom: 1rem;
     animation: slideInDown 0.8s ease;
-    position: relative;
-    display: inline-block;
+    line-height: 1.2;
 }
 
-.hero-content h1::after {
+.hero-content h1 .highlight {
+    color: var(--primary-color);
+}
+
+.subtitle {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.description {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 2rem;
+}
+
+.hero-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-image {
+    width: 300px;
+    height: 300px;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(230, 57, 70, 0.3);
+    animation: slideInRight 0.8s ease;
+    position: relative;
+}
+
+.placeholder-avatar {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: -5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.placeholder-avatar::before {
     content: '';
     position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: var(--primary-color);
-    border-radius: 2px;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1), transparent);
+    animation: shimmer 3s infinite;
+}
+
+.avatar-text {
+    position: relative;
+    z-index: 2;
 }
 
 .hero-content p {
@@ -522,6 +597,26 @@ body {
     }
 }
 
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translate(-100%, -100%) rotate(45deg);
+    }
+    100% {
+        transform: translate(100%, 100%) rotate(45deg);
+    }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .nav-menu {
@@ -530,12 +625,32 @@ body {
         display: none;
     }
 
+    .hero-wrapper {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 2rem;
+    }
+
     .hero-content h1 {
         font-size: 2rem;
     }
 
-    .hero-content p {
-        font-size: 1.1rem;
+    .hero-content {
+        text-align: center;
+    }
+
+    .hero-visual {
+        order: -1;
+    }
+
+    .profile-image {
+        width: 250px;
+        height: 250px;
+        margin: 0 auto;
+    }
+
+    .placeholder-avatar {
+        font-size: 3.5rem;
     }
 
     .about-content,
@@ -578,11 +693,24 @@ body {
         font-size: 1.5rem;
     }
 
+    .subtitle {
+        font-size: 1rem;
+    }
+
     .skills-grid {
         grid-template-columns: 1fr;
     }
 
     .projects-grid {
         grid-template-columns: 1fr;
+    }
+
+    .profile-image {
+        width: 200px;
+        height: 200px;
+    }
+
+    .placeholder-avatar {
+        font-size: 2.5rem;
     }
 }
