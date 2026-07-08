@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- NAVIGATION -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-wrapper">
+                <div class="logo">ONJA </div>
+                <ul class="nav-menu">
+                    <li><a href="#hero">Accueil</a></li>
+                    <li><a href="#about">À propos</a></li>
+                    <li><a href="#skills">Compétences</a></li>
+                    <li><a href="#projects">Projets</a></li>
+                    <li><a href="#experience">Expérience</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SECTION HÉRO -->
+    <section id="hero" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Bonjour, Je suis Onjanirina</h1>
+                <p>Développeur Full-Stack | DevOps | Cybersécurité</p>
+                <button class="btn btn-primary" onclick="document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Me Contacter</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION À PROPOS -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>À Propos</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Développeur Full-Stack et DevOps en Master à l'École Nationale d'Informatique de Fianarantsoa. Passionné par la création d'applications web scalables, l'architecture de défense et la cybersécurité.</p>
+                    <p>Avec une expérience variée en développement web, DevOps, sécurité réseaux et infrastructure, je conçois des solutions complètes et performantes.</p>
+                </div>
+                <div class="about-skills">
+                    <h3>Domaines d'Expertise :</h3>
+                    <ul>
+                        <li>Développement Web (React, Vue, Node.js)</li>
+                        <li>DevOps & Infrastructure (Docker, Kubernetes)</li>
+                        <li>Cybersécurité & Réseaux</li>
+                        <li>Architecture & Design UML/Merise</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION COMPÉTENCES -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2>Compétences</h2>
+            <div class="skills-grid">
+                <div class="skill-card">
+                    <h3>JavaScript / TypeScript</h3>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 90%"></div>
+                    </div>
+                    <span>90%</span>
+                </div>
+                <div class="skill-card">
+                    <h3>React / Vue</h3>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 85%"></div>
+                    </div>
+                    <span>85%</span>
+                </div>
+                <div class="skill-card">
+                    <h3>Node.js / Express</h3>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 88%"></div>
+                    </div>
+                    <span>88%</span>
+                </div>
+                <div class="skill-card">
+                    <h3>Docker / Kubernetes</h3>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 82%"></div>
+                    </div>
+                    <span>82%</span>
+                </div>
+                <div class="skill-card">
+                    <h3>Python / Java</h3>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 80%"></div>
+                    </div>
+                    <span>80%</span>
+                </div>
+                <div class="skill-card">
+                    <h3>PostgreSQL / MySQL</h3>
+                    <div class="skill-bar">
+                        <div class="skill-level" style="width: 85%"></div>
+                    </div>
+                    <span>85%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION PROJETS -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2>Mes Projets</h2>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="project1.jpg" alt="i-distrika">
+                    </div>
+                    <div class="project-info">
+                        <h3>Platform I-DISTRIKA</h3>
+                        <p>Plateforme de gestion administrative pour les districts de Madagascar. DevOps & Product Owner.</p>
+                        <div class="project-tags">
+                            <span>DevOps</span>
+                            <span>Docker</span>
+                            <span>Kubernetes</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="https://ilafitany.mg" class="btn btn-small" target="_blank">Voir</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="project2.jpg" alt="Gestion Étudiants">
+                    </div>
+                    <div class="project-info">
+                        <h3>App Gestion Étudiants</h3>
+                        <p>Application complète de gestion des étudiants universitaires avec React et Express.</p>
+                        <div class="project-tags">
+                            <span>React</span>
+                            <span>Express</span>
+                            <span>MongoDB</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="btn btn-small">Détails</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <div class="project-image">
+                        <img src="project3.jpg" alt="Architecture Défense">
+                    </div>
+                    <div class="project-info">
+                        <h3>Architecture Défense Réseaux</h3>
+                        <p>Architecture sécurisée: Firewall NAT, SNORT (IDS), Suricata (IPS) et stack ELK.</p>
+                        <div class="project-tags">
+                            <span>Cybersécurité</span>
+                            <span>Firewall</span>
+                            <span>IDS/IPS</span>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="btn btn-small">Détails</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION EXPÉRIENCE -->
+    <section id="experience" class="experience">
+        <div class="container">
+            <h2>Expérience</h2>
+            <div class="experience-timeline">
+                <div class="experience-item">
+                    <div class="experience-date">Juin 2026 - Présent</div>
+                    <div class="experience-content">
+                        <h3>DevOps & Product Owner</h3>
+                        <p class="company">Ilafitany Laboratory</p>
+                        <p>Gestion plateforme I-DISTRIKA, déploiement infrastructure, optimisation et support technique.</p>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-date">Sept 2025 - Jan 2026</div>
+                    <div class="experience-content">
+                        <h3>Développeur Full-Stack</h3>
+                        <p class="company">Université + PNUD Madagascar</p>
+                        <p>App web de gestion administrative et documentaire pour districts de Madagascar.</p>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-date">Août - Oct 2025</div>
+                    <div class="experience-content">
+                        <h3>Développeur Web</h3>
+                        <p class="company">ENI Fianarantsoa</p>
+                        <p>App gestion étudiants: React (frontend), Express (backend), technologies modernes.</p>
+                    </div>
+                </div>
+
+                <div class="experience-item">
+                    <div class="experience-date">Juillet - Sept 2025</div>
+                    <div class="experience-content">
+                        <h3>Ingénieur Cybersécurité</h3>
+                        <p class="company">ENI Fianarantsoa</p>
+                        <p>Architecture défense: Firewall NAT, SNORT (IDS), Suricata (IPS), stack ELK monitoring.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION CONTACT -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Me Contacter</h2>
+            <div class="contact-content">
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <input type="text" placeholder="Votre nom" required>
+                        <input type="email" placeholder="Votre email" required>
+                        <textarea placeholder="Votre message" rows="5" required></textarea>
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <h3>Informations de Contact</h3>
+                    <p><strong>Email :</strong> onjanirinarakotondranaivo@gmail.com</p>
+                    <p><strong>Téléphone :</strong> +261384031028</p>
+                    <p><strong>Localisation :</strong> Fianarantsoa, Madagascar</p>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/onjanirina-rakotondranaivo-806b5b2a5/" class="social-icon">LK</a>
+                        <a href="https://github.com/Evil-Ghoster" class="social-icon">GT</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PIED DE PAGE -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Mon Portfolio. Tous droits réservés.</p>
+            <p>Créé avec HTML, CSS et JavaScript</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
