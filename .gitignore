@@ -1,21 +1,46 @@
-# Fichiers du système
+# Fichiers système
 .DS_Store
 Thumbs.db
 *.swp
 *.swo
 *~
+desktop.ini
 
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Dossiers
+# Dossiers de développement
 node_modules/
 dist/
 build/
+.parcel-cache/
+.cache/
 
 # IDE
 .vscode/
 .idea/
 *.sublime-project
 *.sublime-workspace
+.vscode/settings.json
+
+# Variables d'environnement
+.env
+.env.local
+.env.*.local
+
+# Fichiers temporaires
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# Images générées (optionnel)
+# *.png
+# *.jpg
+# *.jpeg
+
+# Ne pas supprimer le CNAME !
+!CNAME
