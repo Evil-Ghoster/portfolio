@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 introSplash.addEventListener('click', hideIntro);
 window.addEventListener('keydown', hideIntro, { once: true });
 
-// ===== CAROUSEL — sliding, direction-aware, looping =====
+// ===== CAROUSEL — sliding avec désactivation des flèches aux extrémités =====
 const slides = document.querySelectorAll('.carousel-slide');
 const indicators = document.querySelectorAll('.indicator');
 const arrowLeft = document.getElementById('arrowLeft');
@@ -22,6 +22,27 @@ const fixedLogo = document.getElementById('fixedLogo');
 const totalSlides = slides.length;
 let currentSlide = 0;
 let isAnimating = false;
+
+function updateArrows() {
+    // Désactiver flèche gauche sur première slide
+    if (currentSlide === 0) {
+        arrowLeft.disabled = true;
+    } else {
+        arrowLeft.disabled = false;
+    }
+    
+    // Désactiver flèche droite sur dernière slide
+    if (currentSlide === totalSlides - 1) {
+        arrowRight.disabled = true;
+    } else {
+        arrowRight.disabled = false;
+    }
+}
+
+function reflow(element) {
+    // eslint-disable-next-line no-unused-expressions
+    element.offsetHeight;
+}
 
 function showSlide(index, direction) {
     const target = (index + totalSlides) % totalSlides;
@@ -32,19 +53,15 @@ function showSlide(index, direction) {
     const oldSlide = slides[currentSlide];
     const newSlide = slides[target];
 
-    // L'ancienne slide part dans le sens opposé au sens de navigation
     oldSlide.style.transform = `translateX(${-dir * 8}%)`;
     oldSlide.style.opacity = '0';
     oldSlide.classList.remove('active');
 
-    // La nouvelle slide démarre hors champ, sans transition, puis glisse à sa place
     newSlide.style.transition = 'none';
     newSlide.style.transform = `translateX(${dir * 8}%)`;
     newSlide.style.opacity = '0';
 
-    // force le reflow pour que le point de départ soit bien pris en compte
-    // eslint-disable-next-line no-unused-expressions
-    newSlide.offsetHeight;
+    reflow(newSlide);
 
     newSlide.style.transition = '';
     newSlide.style.transform = 'translateX(0)';
@@ -57,12 +74,69 @@ function showSlide(index, direction) {
     fixedLogo.classList.toggle('visible', target !== 0);
 
     currentSlide = target;
+    updateArrows();
     setTimeout(() => { isAnimating = false; }, 720);
 }
 
-function nextSlide() { showSlide(currentSlide + 1, 1); }
-function previousSlide() { showSlide(currentSlide - 1, -1); }
+function nextSlide() { 
+    if (currentSlide < totalSlides - 1) {
+        showSlide(currentSlide + 1, 1); 
+    }
+}
+
+function previousSlide() { 
+    if (currentSlide > 0) {
+        showSlide(currentSlide - 1, -1); 
+    }
+}
+
 function goToSlide(n) { showSlide(n); }
+
+// ===== LOGO CLICK - Retour à l'accueil avec animation =====
+const fixedLogoElement = document.getElementById('fixedLogo');
+
+fixedLogoElement.addEventListener('click', function(e) {
+    e.preventDefault();
+    if (currentSlide === 0) return;
+    
+    // Animation de transition
+    const currentSlideElement = slides[currentSlide];
+    currentSlideElement.style.transition = 'transform 0.7s var(--slide-ease), opacity 0.7s var(--slide-ease)';
+    currentSlideElement.style.transform = 'translateX(-100%)';
+    currentSlideElement.style.opacity = '0';
+    currentSlideElement.classList.remove('active');
+    
+    const targetSlide = slides[0];
+    targetSlide.style.transition = 'none';
+    targetSlide.style.transform = 'translateX(100%)';
+    targetSlide.style.opacity = '0';
+    targetSlide.classList.add('active');
+    
+    reflow(targetSlide);
+    
+    targetSlide.style.transition = 'transform 0.7s var(--slide-ease), opacity 0.7s var(--slide-ease)';
+    targetSlide.style.transform = 'translateX(0)';
+    targetSlide.style.opacity = '1';
+    
+    indicators.forEach(i => i.classList.remove('active'));
+    indicators[0].classList.add('active');
+    
+    fixedLogoElement.classList.remove('visible');
+    currentSlide = 0;
+    updateArrows();
+    
+    // Réinitialiser les autres slides
+    slides.forEach((slide, index) => {
+        if (index !== 0) {
+            slide.style.transition = 'none';
+            slide.style.transform = 'translateX(0)';
+            slide.style.opacity = '0';
+            slide.classList.remove('active');
+        }
+    });
+    
+    setTimeout(() => { isAnimating = false; }, 700);
+});
 
 arrowLeft.addEventListener('click', previousSlide);
 arrowRight.addEventListener('click', nextSlide);
@@ -87,25 +161,41 @@ document.addEventListener('keydown', (event) => {
 // ===== MOUSE WHEEL NAVIGATION =====
 let wheelCooldown = false;
 window.addEventListener('wheel', (e) => {
+    const scrollBox = e.target.closest('.experience-scroll');
+    if (scrollBox) {
+        const atTop = scrollBox.scrollTop <= 0;
+        const atBottom = scrollBox.scrollTop + scrollBox.clientHeight >= scrollBox.scrollHeight - 1;
+        if ((e.deltaY < 0 && !atTop) || (e.deltaY > 0 && !atBottom)) return;
+    }
+
     if (wheelCooldown) return;
     wheelCooldown = true;
     if (e.deltaY > 0 || e.deltaX > 0) nextSlide(); else previousSlide();
     setTimeout(() => { wheelCooldown = false; }, 900);
 }, { passive: true });
 
-// ===== SWIPE NAVIGATION (mobile) =====
+// ===== SWIPE NAVIGATION (mobile / tablette) =====
 let touchStartX = 0;
+let touchStartY = 0;
+let touchStartedInScroll = false;
+
 document.addEventListener('touchstart', (e) => {
     touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+    touchStartedInScroll = !!e.target.closest('.experience-scroll');
 }, { passive: true });
 
 document.addEventListener('touchend', (e) => {
-    const delta = e.changedTouches[0].screenX - touchStartX;
-    if (Math.abs(delta) < 50) return;
-    if (delta < 0) nextSlide(); else previousSlide();
+    const deltaX = e.changedTouches[0].screenX - touchStartX;
+    const deltaY = e.changedTouches[0].screenY - touchStartY;
+
+    if (touchStartedInScroll && Math.abs(deltaY) > Math.abs(deltaX)) return;
+
+    if (Math.abs(deltaX) < 50) return;
+    if (deltaX < 0) nextSlide(); else previousSlide();
 }, { passive: true });
 
-// ===== CONTACT FORM VALIDATION (inline, no alert popups) =====
+// ===== CONTACT FORM VALIDATION =====
 const contactForm = document.getElementById('contactForm');
 
 if (contactForm) {
@@ -146,3 +236,6 @@ if (contactForm) {
         }, 3000);
     });
 }
+
+// Initialiser l'état des flèches
+updateArrows();
