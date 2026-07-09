@@ -1,107 +1,148 @@
-// Smooth scroll for navigation links
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
+// ===== INTRO SPLASH =====
+const introSplash = document.getElementById('introSplash');
+
+function hideIntro() {
+    if (!introSplash) return;
+    introSplash.classList.add('hide');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(hideIntro, 2600);
+});
+
+introSplash.addEventListener('click', hideIntro);
+window.addEventListener('keydown', hideIntro, { once: true });
+
+// ===== CAROUSEL — sliding, direction-aware, looping =====
+const slides = document.querySelectorAll('.carousel-slide');
+const indicators = document.querySelectorAll('.indicator');
+const arrowLeft = document.getElementById('arrowLeft');
+const arrowRight = document.getElementById('arrowRight');
+const fixedLogo = document.getElementById('fixedLogo');
+const totalSlides = slides.length;
+let currentSlide = 0;
+let isAnimating = false;
+
+function showSlide(index, direction) {
+    const target = (index + totalSlides) % totalSlides;
+    if (isAnimating || target === currentSlide) return;
+    isAnimating = true;
+
+    const dir = direction || (target > currentSlide ? 1 : -1);
+    const oldSlide = slides[currentSlide];
+    const newSlide = slides[target];
+
+    // L'ancienne slide part dans le sens opposé au sens de navigation
+    oldSlide.style.transform = `translateX(${-dir * 8}%)`;
+    oldSlide.style.opacity = '0';
+    oldSlide.classList.remove('active');
+
+    // La nouvelle slide démarre hors champ, sans transition, puis glisse à sa place
+    newSlide.style.transition = 'none';
+    newSlide.style.transform = `translateX(${dir * 8}%)`;
+    newSlide.style.opacity = '0';
+
+    // force le reflow pour que le point de départ soit bien pris en compte
+    // eslint-disable-next-line no-unused-expressions
+    newSlide.offsetHeight;
+
+    newSlide.style.transition = '';
+    newSlide.style.transform = 'translateX(0)';
+    newSlide.style.opacity = '1';
+    newSlide.classList.add('active');
+
+    indicators.forEach(i => i.classList.remove('active'));
+    indicators[target].classList.add('active');
+
+    fixedLogo.classList.toggle('visible', target !== 0);
+
+    currentSlide = target;
+    setTimeout(() => { isAnimating = false; }, 720);
+}
+
+function nextSlide() { showSlide(currentSlide + 1, 1); }
+function previousSlide() { showSlide(currentSlide - 1, -1); }
+function goToSlide(n) { showSlide(n); }
+
+arrowLeft.addEventListener('click', previousSlide);
+arrowRight.addEventListener('click', nextSlide);
+
+indicators.forEach((dot) => {
+    dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index, 10)));
+});
+
+document.querySelectorAll('[data-target]').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            target.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        }
+        nextSlide();
     });
 });
 
-// Contact form submission
-document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    // Get form values
-    const name = this.querySelector('input[type="text"]').value;
-    const email = this.querySelector('input[type="email"]').value;
-    const message = this.querySelector('textarea').value;
-    
-    // Simple validation
-    if (name && email && message) {
-        // Show success message
-        alert(`Merci ${name}! Votre message a été envoyé avec succès.`);
-        
-        // Reset form
+// ===== KEYBOARD NAVIGATION =====
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') nextSlide();
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') previousSlide();
+});
+
+// ===== MOUSE WHEEL NAVIGATION =====
+let wheelCooldown = false;
+window.addEventListener('wheel', (e) => {
+    if (wheelCooldown) return;
+    wheelCooldown = true;
+    if (e.deltaY > 0 || e.deltaX > 0) nextSlide(); else previousSlide();
+    setTimeout(() => { wheelCooldown = false; }, 900);
+}, { passive: true });
+
+// ===== SWIPE NAVIGATION (mobile) =====
+let touchStartX = 0;
+document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.addEventListener('touchend', (e) => {
+    const delta = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(delta) < 50) return;
+    if (delta < 0) nextSlide(); else previousSlide();
+}, { passive: true });
+
+// ===== CONTACT FORM VALIDATION (inline, no alert popups) =====
+const contactForm = document.getElementById('contactForm');
+
+if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const nameField = document.getElementById('cf-name');
+        const emailField = document.getElementById('cf-email');
+        const messageField = document.getElementById('cf-message');
+
+        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value.trim());
+
+        let valid = true;
+        [
+            [nameField, nameField.value.trim().length > 0],
+            [emailField, isEmailValid],
+            [messageField, messageField.value.trim().length > 0]
+        ].forEach(([field, ok]) => {
+            const wrapper = field.closest('.form-field');
+            wrapper.classList.toggle('invalid', !ok);
+            if (!ok) valid = false;
+        });
+
+        if (!valid) return;
+
+        const button = this.querySelector('button');
+        const originalText = button.textContent;
+        button.textContent = 'Message envoyé !';
+        button.style.backgroundColor = '#2e8b57';
+        button.style.borderColor = '#2e8b57';
+
         this.reset();
-        
-        // In a real application, you would send the data to a server here
-        // Example: sendFormData(name, email, message);
-    } else {
-        alert('Veuillez remplir tous les champs du formulaire.');
-    }
-});
 
-// Add animation to skill bars on scroll
-const observerOptions = {
-    threshold: 0.5
-};
-
-const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.animation = 'slideInDown 0.8s ease';
-        }
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.style.backgroundColor = '';
+            button.style.borderColor = '';
+        }, 3000);
     });
-}, observerOptions);
-
-// Observe all cards
-document.querySelectorAll('.skill-card').forEach(card => {
-    observer.observe(card);
-});
-
-document.querySelectorAll('.project-card').forEach(card => {
-    observer.observe(card);
-});
-
-// Mobile menu toggle (optional - for hamburger menu)
-function setupMobileMenu() {
-    // You can add mobile menu functionality here if needed
-    const navMenu = document.querySelector('.nav-menu');
-    
-    // Example: if you add a hamburger button, you can toggle the menu
-    if (window.innerWidth <= 768) {
-        // Mobile adjustments if needed
-    }
 }
-
-// Call on page load and resize
-window.addEventListener('load', setupMobileMenu);
-window.addEventListener('resize', setupMobileMenu);
-
-// Scroll effect for navbar
-let lastScrollTop = 0;
-const navbar = document.querySelector('.navbar');
-
-window.addEventListener('scroll', function() {
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    
-    if (scrollTop > 50) {
-        navbar.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.15)';
-    } else {
-        navbar.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.1)';
-    }
-    
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-});
-
-// Animate numbers in stats (optional enhancement)
-function animateValue(element, start, end, duration) {
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        element.textContent = Math.floor(progress * (end - start) + start);
-        if (progress < 1) {
-            window.requestAnimationFrame(step);
-        }
-    };
-    window.requestAnimationFrame(step);
-}
-
-// Log page ready
-console.log('Portfolio page loaded successfully!');
